@@ -1,24 +1,89 @@
-# Build output
+# ─── Build output ────────────────────────────────────────────────────────────
 dist/
 .output/
+.vercel/output/
 
-# Node
-node_modules/
-
-# Astro
+# ─── Astro ────────────────────────────────────────────────────────────────────
 .astro/
 
-# Env
+# ─── Node ─────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# ─── Environment variables ────────────────────────────────────────────────────
 .env
 .env.*
 !.env.example
+!.env.test
 
-# Editor
-.vscode/
+# ─── Vercel ───────────────────────────────────────────────────────────────────
+.vercel/
+
+# ─── Testing ──────────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# ─── TypeScript ───────────────────────────────────────────────────────────────
+*.tsbuildinfo
+
+# ─── Editors — VS Code ────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+# ─── Editors — JetBrains (IntelliJ, WebStorm, etc.) ─────────────────────────
 .idea/
+*.iml
+*.iws
+*.ipr
+
+# ─── Editors — Vim / Neovim ──────────────────────────────────────────────────
 *.swp
 *.swo
+*~
+Session.vim
+.netrwhist
 
-# OS
+# ─── Editors — Emacs ─────────────────────────────────────────────────────────
+\#*\#
+.\#*
+*.elc
+auto-save-list
+tramp
+
+# ─── OS — macOS ───────────────────────────────────────────────────────────────
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ─── OS — Windows ─────────────────────────────────────────────────────────────
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ─── OS — Linux ───────────────────────────────────────────────────────────────
+.fuse_hidden*
+.nfs*
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+*.log
+*.pid
+*.seed
+*.pid.lock
+.cache/
+.temp/
+.tmp/
