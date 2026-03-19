@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "title": "Your Name — Software Engineer",
+    "description": "Software Engineer portfolio"
+  },
+  "nav": {
+    "about": "About",
+    "stack": "Stack",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "hero": {
+    "overline": "// 01 · Software Engineer",
+    "heading_line1": "Building",
+    "heading_line2": "Systems",
+    "heading_line3": "That Work.",
+    "subtext": "Backend engineer focused on scalable APIs and developer tooling.",
+    "cta_projects": "See projects",
+    "cta_contact": "Get in touch"
+  },
+  "about": {
+    "overline": "// 02 · About",
+    "heading": "README.md",
+    "paragraphs": [
+      "Placeholder paragraph one about background and focus.",
+      "Placeholder paragraph two about what you build and why.",
+      "Placeholder paragraph three about current interests."
+    ],
+    "stats": {
+      "years_label": "years of experience",
+      "projects_label": "projects shipped",
+      "tech_label": "technologies used",
+      "commits_label": "commits this year"
+    }
+  },
+  "stack": {
+    "overline": "// 03 · Stack",
+    "heading": "Tools I Build With"
+  },
+  "projects": {
+    "overline": "// 04 · Projects",
+    "heading": "Selected Work",
+    "github_label": "GitHub",
+    "live_label": "Live"
+  },
+  "contact": {
+    "overline": "// 05 · Contact",
+    "heading": "Let's Talk.",
+    "subtext": "Available for freelance and full-time opportunities.",
+    "email_label": "Send an email",
+    "whatsapp_label": "WhatsApp"
+  },
+  "footer": {
+    "built_with": "Built with Astro · Tailwind · TypeScript",
+    "source_label": "Source"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "title": "Seu Nome — Engenheiro de Software",
+    "description": "Portfólio de Engenheiro de Software"
+  },
+  "nav": {
+    "about": "Sobre",
+    "stack": "Stack",
+    "projects": "Projetos",
+    "contact": "Contato"
+  },
+  "hero": {
+    "overline": "// 01 · Engenheiro de Software",
+    "heading_line1": "Construindo",
+    "heading_line2": "Sistemas",
+    "heading_line3": "Que Funcionam.",
+    "subtext": "Engenheiro backend focado em APIs escaláveis e ferramentas para desenvolvedores.",
+    "cta_projects": "Ver projetos",
+    "cta_contact": "Entrar em contato"
+  },
+  "about": {
+    "overline": "// 02 · Sobre",
+    "heading": "README.md",
+    "paragraphs": [
+      "Parágrafo um sobre background e foco.",
+      "Parágrafo dois sobre o que você constrói e por quê.",
+      "Parágrafo três sobre interesses atuais."
+    ],
+    "stats": {
+      "years_label": "anos de experiência",
+      "projects_label": "projetos entregues",
+      "tech_label": "tecnologias utilizadas",
+      "commits_label": "commits este ano"
+    }
+  },
+  "stack": {
+    "overline": "// 03 · Stack",
+    "heading": "Ferramentas que Uso"
+  },
+  "projects": {
+    "overline": "// 04 · Projetos",
+    "heading": "Trabalhos Selecionados",
+    "github_label": "GitHub",
+    "live_label": "Demo"
+  },
+  "contact": {
+    "overline": "// 05 · Contato",
+    "heading": "Vamos Conversar.",
+    "subtext": "Disponível para projetos freelance e oportunidades em tempo integral.",
+    "email_label": "Enviar e-mail",
+    "whatsapp_label": "WhatsApp"
+  },
+  "footer": {
+    "built_with": "Feito com Astro · Tailwind · TypeScript",
+    "source_label": "Código-fonte"
+  }
+}

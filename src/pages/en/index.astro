@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('en');
+---
+
+<Layout title={t.meta.title} description={t.meta.description} lang="en">
+  <p style="color: var(--text-muted); padding: 2rem; font-family: 'JetBrains Mono', monospace;">
+    // EN — scaffold placeholder
+  </p>
+</Layout>

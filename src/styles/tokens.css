@@ -1,0 +1,89 @@
+/* Design Tokens — Portfolio
+   Source of truth: docs/DESIGN_SPEC.md
+   All visual decisions must trace back to these tokens.
+*/
+
+@theme {
+  /* ─── Backgrounds ──────────────────────────────── */
+  --color-bg-base:     #0B0B0D;
+  --color-bg-surface:  #141416;
+  --color-bg-elevated: #1e1e21;
+  --color-bg-input:    #1a1a1c;
+
+  /* ─── Text ─────────────────────────────────────── */
+  --color-text-primary:   #F2F2F2;
+  --color-text-secondary: #BFBFBF;
+  --color-text-muted:     #8C8C8C;
+  --color-text-ghost:     #595959;
+
+  /* ─── Accent ───────────────────────────────────── */
+  --color-accent:         #F28705;
+  --color-accent-hover:   #F27405;
+  --color-accent-deep:    #D93D04;
+  --color-accent-muted:   #D95204;
+  --color-accent-darkest: #591902;
+
+  /* ─── Borders ──────────────────────────────────── */
+  --color-border-subtle:  rgba(242, 135, 5, 0.12);
+  --color-border-accent:  rgba(242, 135, 5, 0.40);
+  --color-border-neutral: rgba(242, 242, 242, 0.08);
+
+  /* ─── Fonts ────────────────────────────────────── */
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* ─── Spacing (4px scale) ──────────────────────── */
+  --spacing-1:  4px;
+  --spacing-2:  8px;
+  --spacing-3:  12px;
+  --spacing-4:  16px;
+  --spacing-6:  24px;
+  --spacing-8:  32px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-32: 128px;
+
+  /* ─── Breakpoints ──────────────────────────────── */
+  --breakpoint-sm: 375px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+
+  /* ─── Containers ───────────────────────────────── */
+  --container-default: 1200px;
+  --container-narrow:  800px;
+  --container-wide:    1440px;
+
+  /* ─── Border Radius ─────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+/* Raw CSS custom properties for use outside Tailwind */
+:root {
+  --bg-base:     #0B0B0D;
+  --bg-surface:  #141416;
+  --bg-elevated: #1e1e21;
+  --bg-input:    #1a1a1c;
+
+  --text-primary:   #F2F2F2;
+  --text-secondary: #BFBFBF;
+  --text-muted:     #8C8C8C;
+  --text-ghost:     #595959;
+
+  --accent:         #F28705;
+  --accent-hover:   #F27405;
+  --accent-deep:    #D93D04;
+  --accent-muted:   #D95204;
+  --accent-darkest: #591902;
+
+  --border-subtle:  rgba(242, 135, 5, 0.12);
+  --border-accent:  rgba(242, 135, 5, 0.40);
+  --border-neutral: rgba(242, 242, 242, 0.08);
+}
