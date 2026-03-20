@@ -1,0 +1,119 @@
+---
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: 'en' | 'pt-br';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div
+  id="boot-screen"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+  aria-label={lang === 'en' ? 'Loading portfolio' : 'Carregando portfólio'}
+>
+  <div class="boot-inner">
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-fill animate-progress"></div>
+    </div>
+    <div class="terminal-lines" aria-hidden="true">
+      <p class="terminal-line">{t.boot.line1}</p>
+      <p class="terminal-line">{t.boot.line2}</p>
+      <p class="terminal-line">{t.boot.line3}</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  #boot-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-base);
+  }
+
+  .boot-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .progress-track {
+    width: 240px;
+    height: 6px;
+    background-color: var(--bg-elevated);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--accent);
+    border-radius: 9999px;
+  }
+
+  .terminal-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 240px;
+  }
+
+  .terminal-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-ghost);
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  .terminal-line.visible {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .terminal-line {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const screen = document.getElementById('boot-screen');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduced || !screen) {
+      screen?.remove();
+      document.body.classList.remove('booting');
+      return;
+    }
+
+    const lines = screen.querySelectorAll('.terminal-line');
+    [100, 500, 900].forEach((ms, i) =>
+      setTimeout(() => lines[i]?.classList.add('visible'), ms)
+    );
+
+    setTimeout(() => {
+      screen.classList.add('animate-boot-exit');
+      screen.addEventListener(
+        'animationend',
+        () => {
+          screen.remove();
+          document.body.classList.remove('booting');
+        },
+        { once: true }
+      );
+    }, 1200);
+  })();
+</script>

@@ -22,6 +22,11 @@
   to   { width: 100%; }
 }
 
+@keyframes boot-exit {
+  from { opacity: 1; }
+  to   { opacity: 0; pointer-events: none; }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .animate-fade-in {
     animation: fade-in 400ms ease both;
@@ -38,13 +43,18 @@
   .animate-progress {
     animation: progress-fill 1.2s ease-out both;
   }
+
+  .animate-boot-exit {
+    animation: boot-exit 300ms ease-out forwards;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-fade-in-up,
   .animate-ticker,
-  .animate-progress {
+  .animate-progress,
+  .animate-boot-exit {
     animation: none;
   }
 }

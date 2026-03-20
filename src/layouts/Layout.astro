@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Boot from '../components/Boot.astro';
 
 interface Props {
   title: string;
@@ -45,10 +46,29 @@ const hreflangPtBr = new URL('/pt-br/', Astro.site ?? 'http://localhost:4321').h
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
 
     <title>{title}</title>
+
+    <!-- Boot: hide content until boot sequence completes (LCP preserved via visibility:hidden) -->
+    <style>
+      body.booting > header,
+      body.booting > main,
+      body.booting > footer {
+        visibility: hidden;
+      }
+
+      /* prefers-reduced-motion: skip boot entirely, show content immediately */
+      @media (prefers-reduced-motion: reduce) {
+        #boot-screen { display: none !important; }
+        body.booting > header,
+        body.booting > main,
+        body.booting > footer { visibility: visible !important; }
+      }
+    </style>
   </head>
 
-  <body>
-    <!-- Skip to content — accessibility -->
+  <body class="booting">
+    <Boot lang={lang} />
+
+    <!-- Skip to content — accessibility (z-index 9999, above boot overlay) -->
     <a href="#main-content" class="skip-to-content">Skip to content</a>
 
     <header role="banner">
