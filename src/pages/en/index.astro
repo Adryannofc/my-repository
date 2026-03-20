@@ -1,19 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
 import { useTranslations } from '../../i18n/utils';
 
 const t = useTranslations('en');
 ---
 
 <Layout title={t.meta.title} description={t.meta.description} lang="en">
-  <p class="scaffold-placeholder">// EN — scaffold placeholder</p>
+  <Hero lang="en" />
 </Layout>
-
-<style>
-  .scaffold-placeholder {
-    padding: 32px;
-    color: var(--text-muted);
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    font-size: 16px;
-  }
-</style>

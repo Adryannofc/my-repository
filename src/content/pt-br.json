@@ -16,7 +16,8 @@
     "heading_line3": "Que Funcionam.",
     "subtext": "Engenheiro backend focado em APIs escaláveis e ferramentas para desenvolvedores.",
     "cta_projects": "Ver projetos",
-    "cta_contact": "Entrar em contato"
+    "cta_contact": "Entrar em contato",
+    "ticker": ["TypeScript", "Node.js", "Astro", "React", "PostgreSQL", "Docker", "APIs REST", "Git"]
   },
   "about": {
     "overline": "// 02 · Sobre",
