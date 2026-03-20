@@ -74,6 +74,12 @@ body {
   top: 16px;
 }
 
+/* Text selection */
+::selection {
+  background-color: var(--accent);
+  color: var(--bg-base);
+}
+
 /* Code inline */
 code:not([class]) {
   font-family: 'JetBrains Mono', monospace;
