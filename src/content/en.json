@@ -16,7 +16,8 @@
     "heading_line3": "That Work.",
     "subtext": "Backend engineer focused on scalable APIs and developer tooling.",
     "cta_projects": "See projects",
-    "cta_contact": "Get in touch"
+    "cta_contact": "Get in touch",
+    "ticker": ["TypeScript", "Node.js", "Astro", "React", "PostgreSQL", "Docker", "REST APIs", "Git"]
   },
   "about": {
     "overline": "// 02 · About",
