@@ -6,7 +6,14 @@ const t = useTranslations('pt-br');
 ---
 
 <Layout title={t.meta.title} description={t.meta.description} lang="pt-br">
-  <p style="color: var(--text-muted); padding: 2rem; font-family: 'JetBrains Mono', monospace;">
-    // PT-BR — scaffold placeholder
-  </p>
+  <p class="scaffold-placeholder">// PT-BR — scaffold placeholder</p>
 </Layout>
+
+<style>
+  .scaffold-placeholder {
+    padding: 32px;
+    color: var(--text-muted);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 16px;
+  }
+</style>

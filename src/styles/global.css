@@ -62,7 +62,12 @@ body {
   font-weight: 500;
   border-radius: 4px;
   text-decoration: none;
-  transition: top 100ms;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skip-to-content {
+    transition: top 100ms;
+  }
 }
 
 .skip-to-content:focus {

@@ -74,16 +74,15 @@ const t = useTranslations(lang);
     line-height: 1.5;
     color: var(--text-ghost);
     opacity: 0;
-    transition: opacity 200ms ease;
   }
 
   .terminal-line.visible {
     opacity: 1;
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion: no-preference) {
     .terminal-line {
-      transition: none;
+      transition: opacity 200ms ease;
     }
   }
 </style>
