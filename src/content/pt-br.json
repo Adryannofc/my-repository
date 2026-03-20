@@ -53,5 +53,10 @@
   "footer": {
     "built_with": "Feito com Astro · Tailwind · TypeScript",
     "source_label": "Código-fonte"
+  },
+  "boot": {
+    "line1": "$ iniciando portfólio...",
+    "line2": "$ carregando recursos...",
+    "line3": "$ pronto."
   }
 }
