@@ -1,0 +1,99 @@
+---
+interface Props {
+  value: number;
+  label: string;
+}
+
+const { value, label } = Astro.props;
+---
+
+<div class="stat-card" data-target={value}>
+  <span class="stat-number" aria-live="polite">0</span>
+  <span class="stat-label">{label}</span>
+</div>
+
+<script>
+  (function () {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cards = document.querySelectorAll<HTMLElement>('.stat-card');
+
+    cards.forEach((card) => {
+      const target = Number(card.dataset.target);
+      const numEl = card.querySelector<HTMLElement>('.stat-number');
+      if (!numEl) return;
+
+      if (reduced) {
+        numEl.textContent = String(target);
+        return;
+      }
+
+      const duration = 1500;
+
+      function easeOut(t: number): number {
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function runCounter() {
+        const start = performance.now();
+
+        function step(now: number) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          numEl!.textContent = String(Math.round(easeOut(progress) * target));
+          if (progress < 1) requestAnimationFrame(step);
+        }
+
+        requestAnimationFrame(step);
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              observer.unobserve(card);
+              runCounter();
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+
+      observer.observe(card);
+    });
+  })();
+</script>
+
+<style>
+  .stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 120px;
+    padding: 24px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: var(--font-sans);
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-ghost);
+    line-height: 1.4;
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+import { useTranslations } from '../i18n/utils';
+import StatCounter from './StatCounter.astro';
+
+interface Props {
+  lang: 'en' | 'pt-br';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const stats = [
+  { value: 2,   label: t.about.stats.years_label    },
+  { value: 8,   label: t.about.stats.projects_label },
+  { value: 12,  label: t.about.stats.tech_label     },
+  { value: 340, label: t.about.stats.commits_label  },
+];
+---
+
+<section id="about" aria-labelledby="about-heading">
+  <div class="about-container">
+
+    <p class="about-overline">{t.about.overline}</p>
+
+    <h2 id="about-heading" class="about-heading">{t.about.heading}</h2>
+
+    <div class="about-body">
+      {t.about.paragraphs.map((paragraph) => (
+        <p class="about-paragraph">{paragraph}</p>
+      ))}
+    </div>
+
+    <div class="about-stats" role="list">
+      {stats.map((stat) => (
+        <div role="listitem">
+          <StatCounter value={stat.value} label={stat.label} />
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  section {
+    width: 100%;
+    background-color: var(--bg-base);
+    min-height: 280px;
+  }
+
+  .about-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 96px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .about-overline {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .about-heading {
+    font-family: var(--font-sans);
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .about-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .about-paragraph {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .about-stats > [role="listitem"] {
+    display: contents;
+  }
+
+  @media (max-width: 767px) {
+    .about-container {
+      padding: 64px 24px;
+      gap: 24px;
+    }
+
+    .about-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .about-container {
+      padding: 80px 24px;
+    }
+  }
+</style>
