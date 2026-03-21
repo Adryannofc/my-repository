@@ -1,0 +1,212 @@
+---
+import { useTranslations } from '../i18n/utils';
+import { stackCategories } from '../data/stack';
+
+interface Props {
+  lang: 'en' | 'pt-br';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="stack" aria-labelledby="stack-heading">
+  <div class="stack-container">
+
+    <p class="stack-overline">{t.stack.overline}</p>
+
+    <h2 id="stack-heading" class="stack-heading">{t.stack.heading}</h2>
+
+    <div class="stack-categories" data-stack>
+      {stackCategories.map((cat) => {
+        const label = lang === 'en' ? cat.labelEn : cat.labelPtBr;
+        return (
+          <div class="stack-group">
+            <p class="group-label" aria-hidden="true">{label}</p>
+            <ul class="stack-grid" role="list" aria-label={label}>
+              {cat.items.map((item, i) => (
+                <li
+                  class="stack-pill"
+                  role="listitem"
+                  tabindex="0"
+                  style={`--delay: ${i * 60}ms`}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                    aria-hidden="true"
+                    class="pill-icon"
+                  >
+                    <path d={item.svgPath} />
+                  </svg>
+                  <span class="pill-name">{item.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const grid = document.querySelector('[data-stack]');
+    if (!grid || reduced) return;
+
+    const pills = grid.querySelectorAll<HTMLElement>('.stack-pill');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            observer.unobserve(entry.target);
+            pills.forEach((pill) => {
+              pill.classList.add('animate-fade-in-up');
+            });
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(grid);
+  })();
+</script>
+
+<style>
+  section {
+    width: 100%;
+    background-color: var(--bg-surface);
+  }
+
+  .stack-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 96px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .stack-overline {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .stack-heading {
+    font-family: var(--font-sans);
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .stack-categories {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+  }
+
+  .stack-group {
+    padding: 24px 0;
+    border-top: 1px solid var(--border-neutral);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .group-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-ghost);
+    margin: 0;
+  }
+
+  .stack-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .stack-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 9999px;
+    cursor: default;
+    transition: border-color 150ms ease;
+  }
+
+  .pill-icon {
+    fill: currentColor;
+    color: var(--text-ghost);
+    flex-shrink: 0;
+    transition: color 150ms ease;
+  }
+
+  .pill-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    transition: color 150ms ease;
+    white-space: nowrap;
+  }
+
+  .stack-pill:hover,
+  .stack-pill:focus-visible {
+    border-color: var(--border-accent);
+  }
+
+  .stack-pill:hover .pill-icon,
+  .stack-pill:focus-visible .pill-icon {
+    color: var(--accent);
+  }
+
+  .stack-pill:hover .pill-name,
+  .stack-pill:focus-visible .pill-name {
+    color: var(--accent);
+  }
+
+  /* Staggered fade-in via IntersectionObserver */
+  .stack-pill.animate-fade-in-up {
+    animation-delay: var(--delay);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stack-pill,
+    .pill-icon,
+    .pill-name {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .stack-container {
+      padding: 64px 24px;
+    }
+  }
+</style>
