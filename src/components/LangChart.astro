@@ -1,0 +1,342 @@
+---
+import type { StackItem } from '../data/stack';
+
+interface Props {
+  items: StackItem[];
+}
+
+const { items } = Astro.props;
+
+// ── Data ─────────────────────────────────────────────────────────────────────
+const withLoc = items.filter((i): i is StackItem & { loc: number } => i.loc != null);
+const totalLoc = withLoc.reduce((s, i) => s + i.loc, 0);
+
+function fmtK(n: number) {
+  return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+}
+
+const rows = withLoc.map((item, idx) => ({
+  name:    item.name,
+  svgPath: item.svgPath,
+  locFmt:  fmtK(item.loc),
+  pct:     parseFloat((item.loc / totalLoc * 100).toFixed(1)),
+  delay:   idx * 160,
+  primary: idx === 0,
+}));
+
+const totalFmt   = fmtK(totalLoc);
+const distPct    = rows[0]?.pct ?? 50;
+---
+
+<div class="lang-dash" id="lang-dash" aria-label="Language breakdown">
+
+  <!-- ── Header ─────────────────────────────────────────────────────── -->
+  <div class="ld-header">
+    <span class="ld-title">LANG BREAKDOWN</span>
+    <div class="ld-total">
+      <span class="ld-total-num">{totalFmt}</span>
+      <span class="ld-total-label">LOC</span>
+    </div>
+  </div>
+
+  <div class="ld-divider"></div>
+
+  <!-- ── Language rows ──────────────────────────────────────────────── -->
+  <div class="ld-rows">
+    {rows.map((row) => (
+      <div class="ld-row">
+        <div class="ld-row-top">
+          <div class="ld-lang-id">
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="currentColor"
+              class={`ld-icon ${row.primary ? 'ld-icon--primary' : 'ld-icon--secondary'}`}
+              aria-hidden="true"
+            >
+              <path d={row.svgPath} />
+            </svg>
+            <span class="ld-lang-name">{row.name}</span>
+          </div>
+          <div class="ld-row-nums">
+            <span class="ld-loc">{row.locFmt}</span>
+            <span class="ld-pct">{row.pct}%</span>
+          </div>
+        </div>
+        <div class="ld-track" role="presentation">
+          <div
+            class="ld-bar"
+            style={`--w: ${row.pct}%; --delay: ${row.delay}ms; --bar-color: ${row.primary ? 'var(--accent)' : 'var(--border-accent)'}`}
+          ></div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="ld-divider"></div>
+
+  <!-- ── Distribution ───────────────────────────────────────────────── -->
+  <div class="ld-dist">
+    <div class="ld-dist-track" role="presentation">
+      <div class="ld-dist-primary" style={`--w: ${distPct}%`}></div>
+    </div>
+    <div class="ld-dist-legend">
+      {rows.map((row) => (
+        <span class="ld-legend-item">
+          <span class={`ld-dot ${row.primary ? 'ld-dot--primary' : 'ld-dot--secondary'}`}></span>
+          <span class={`ld-legend-name ${row.primary ? 'ld-legend--primary' : 'ld-legend--secondary'}`}>
+            {row.name}&nbsp;{row.pct}%
+          </span>
+        </span>
+      ))}
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const el = document.getElementById('lang-dash');
+  if (el) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      el.classList.add('ld--visible');
+    } else {
+      const obs = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            obs.disconnect();
+            el.classList.add('ld--visible');
+          }
+        },
+        { threshold: 0.3 }
+      );
+      obs.observe(el);
+    }
+  }
+</script>
+
+<style>
+  /* ── Card ───────────────────────────────────────────────────────────── */
+
+  .lang-dash {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-neutral);
+    border-radius: 12px;
+    max-width: 480px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ── Header ─────────────────────────────────────────────────────────── */
+
+  .ld-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ld-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-ghost);
+  }
+
+  .ld-total {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+
+  .ld-total-num {
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .ld-total-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-ghost);
+  }
+
+  /* ── Divider ─────────────────────────────────────────────────────────── */
+
+  .ld-divider {
+    height: 1px;
+    background: var(--border-neutral);
+  }
+
+  /* ── Rows ────────────────────────────────────────────────────────────── */
+
+  .ld-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ld-row {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .ld-row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ld-lang-id {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ld-icon--primary   { color: var(--accent);      }
+  .ld-icon--secondary { color: var(--text-ghost);  }
+
+  .ld-lang-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  .ld-row-nums {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ld-loc {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .ld-pct {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-ghost);
+    min-width: 4ch;
+    text-align: right;
+  }
+
+  /* ── Bar track ───────────────────────────────────────────────────────── */
+
+  .ld-track {
+    height: 5px;
+    background: var(--bg-base);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .ld-bar {
+    height: 100%;
+    width: var(--w);
+    background: var(--bar-color, var(--accent));
+    border-radius: 9999px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ld-bar {
+      transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+      transition-delay: var(--delay, 0ms);
+    }
+  }
+
+  .ld--visible .ld-bar {
+    transform: scaleX(1);
+  }
+
+  /* ── Distribution ────────────────────────────────────────────────────── */
+
+  .ld-dist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ld-dist-track {
+    height: 4px;
+    background: var(--border-accent);
+    border-radius: 9999px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ld-dist-primary {
+    position: absolute;
+    inset: 0;
+    width: var(--w);
+    background: var(--accent);
+    border-radius: 9999px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ld-dist-primary {
+      transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+      transition-delay: 320ms;
+    }
+  }
+
+  .ld--visible .ld-dist-primary {
+    transform: scaleX(1);
+  }
+
+  /* ── Legend ──────────────────────────────────────────────────────────── */
+
+  .ld-dist-legend {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .ld-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ld-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ld-dot--primary   { background: var(--accent);        }
+  .ld-dot--secondary { background: var(--border-accent); }
+
+  .ld-legend-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+  }
+
+  .ld-legend--primary   { color: var(--text-muted); }
+  .ld-legend--secondary { color: var(--text-ghost); }
+
+  /* ── Responsive ──────────────────────────────────────────────────────── */
+
+  @media (max-width: 767px) {
+    .lang-dash {
+      max-width: 100%;
+    }
+  }
+</style>

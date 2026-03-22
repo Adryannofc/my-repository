@@ -14,6 +14,8 @@ import {
 export interface StackItem {
   name: string;
   svgPath: string;
+  loc?: number;   // lines of code — only for language items
+  short?: string; // 2-char label for chart rows
 }
 
 export interface StackCategory {
@@ -27,8 +29,8 @@ export const stackCategories: StackCategory[] = [
     labelEn: 'Languages',
     labelPtBr: 'Linguagens',
     items: [
-      { name: 'TypeScript', svgPath: siTypescript.path },
-      { name: 'JavaScript', svgPath: siJavascript.path },
+      { name: 'TypeScript', svgPath: siTypescript.path, loc: 14200, short: 'TS' },
+      { name: 'JavaScript', svgPath: siJavascript.path, loc:  6800, short: 'JS' },
     ],
   },
   {

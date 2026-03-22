@@ -1,9 +1,10 @@
 {
   "meta": {
-    "title": "Your Name — Software Engineer",
+    "title": "Adryann Felix — Software Engineer",
     "description": "Software Engineer portfolio"
   },
   "nav": {
+    "logo": "Adryann Felix.",
     "about": "About",
     "stack": "Stack",
     "projects": "Projects",
