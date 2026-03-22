@@ -1,0 +1,384 @@
+---
+// ── Data ─────────────────────────────────────────────────────────────────────
+const commits = [
+  { month: 'OCT', value: 28 },
+  { month: 'NOV', value: 35 },
+  { month: 'DEC', value: 52 },
+  { month: 'JAN', value: 41 },
+  { month: 'FEB', value: 64 },
+  { month: 'MAR', value: 71 },
+];
+
+const maxVal = Math.max(...commits.map(c => c.value));
+const BAR_W  = 14;
+
+function buildBar(v: number): { filled: string; empty: string } {
+  const n = Math.round((v / maxVal) * BAR_W);
+  return { filled: '█'.repeat(n), empty: '░'.repeat(BAR_W - n) };
+}
+
+const rows = commits.map((c, i) => ({
+  ...c,
+  ...buildBar(c.value),
+  up:    i > 0 && c.value >= commits[i - 1].value,
+  trend: i === 0 ? '' : (c.value >= commits[i - 1].value ? '▲' : '▼'),
+}));
+
+// Sparkline — 14 data points showing broader trend
+const sparkRaw = [28, 22, 35, 30, 52, 45, 41, 58, 64, 60, 68, 71, 67, 71];
+const sparkMax = Math.max(...sparkRaw);
+const SPARKS   = '▁▂▃▄▅▆▇█';
+const sparkStr = sparkRaw
+  .map(v => SPARKS[Math.min(7, Math.round((v / sparkMax) * 7))])
+  .join('');
+
+// ── Delay schedule (ms) ───────────────────────────────────────────────────────
+// Typing finishes at ≈ 60 + 700 = 760ms
+const T = {
+  cmd:    0,
+  hdr:    800,
+  rule1:  860,
+  bar:    (i: number) => 920 + i * 80,
+  rule2:  920 + commits.length * 80 + 40,
+  spark:  920 + commits.length * 80 + 100,
+  status: 920 + commits.length * 80 + 220,
+  idle:   920 + commits.length * 80 + 310,
+};
+
+// "analyze --target portfolio" must be exactly 26 chars for steps(26) CSS
+const CMD = 'analyze --target portfolio'; // 26 chars ✓
+---
+
+<div class="ascii-terminal" id="ascii-terminal" aria-hidden="true">
+
+  <!-- macOS-style chrome -->
+  <div class="term-chrome">
+    <span class="dots" aria-hidden="true">
+      <span class="dot dot-r"></span>
+      <span class="dot dot-y"></span>
+      <span class="dot dot-g"></span>
+    </span>
+    <span class="term-fname">{CMD.split(' ')[0]}.sh</span>
+  </div>
+
+  <!-- Terminal output -->
+  <div class="term-body">
+
+    <!-- Command line -->
+    <div class="term-line" style={`--dl: ${T.cmd}ms`}>
+      <span class="c-ghost">$&nbsp;</span>
+      <span class="t-typing">{CMD}</span>
+    </div>
+
+    <div class="term-gap"></div>
+
+    <!-- Section header -->
+    <div class="term-line" style={`--dl: ${T.hdr}ms`}>
+      <span class="c-label">COMMITS&nbsp;/&nbsp;6M</span>
+    </div>
+    <div class="term-line" style={`--dl: ${T.rule1}ms`}>
+      <span class="c-rule">──────────────────────────</span>
+    </div>
+
+    <!-- Bar rows -->
+    {rows.map(({ month, filled, empty, value, up, trend }, i) => (
+      <div class="term-line bar-row" style={`--dl: ${T.bar(i)}ms`}>
+        <span class="c-muted bar-month">{month}&nbsp;&nbsp;</span>
+        <span class="bar-fill">
+          <span class="c-primary">{filled}</span><span class="c-ghost">{empty}</span>
+        </span>
+        <span class="c-muted bar-count">{value}</span>
+        {trend && (
+          <span class={`bar-trend ${up ? 'c-up' : 'c-down'}`}>&nbsp;{trend}</span>
+        )}
+      </div>
+    ))}
+
+    <!-- Rule -->
+    <div class="term-line" style={`--dl: ${T.rule2}ms`}>
+      <span class="c-rule">──────────────────────────</span>
+    </div>
+
+    <!-- Sparkline -->
+    <div class="term-line" style={`--dl: ${T.spark}ms`}>
+      <span class="c-label">TREND&nbsp;&nbsp;</span>
+      <span class="bar-fill c-accent">{sparkStr}</span>
+    </div>
+
+    <div class="term-gap"></div>
+
+    <!-- Status row -->
+    <div class="term-line" style={`--dl: ${T.status}ms`}>
+      <span class="c-online">●&nbsp;</span>
+      <span class="c-secondary">available&nbsp;</span>
+      <span class="c-ghost">·&nbsp;</span>
+      <span class="c-secondary">&lt;&nbsp;24h&nbsp;resp</span>
+    </div>
+
+    <!-- Idle prompt + blinking cursor -->
+    <div class="term-line" style={`--dl: ${T.idle}ms`}>
+      <span class="c-ghost">$&nbsp;</span>
+      <span class="t-cursor">▊</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const el = document.getElementById('ascii-terminal');
+
+  if (el) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function activate() {
+      el.classList.add('terminal--active');
+    }
+
+    function tryActivate() {
+      if (document.body.classList.contains('booting')) {
+        const mo = new MutationObserver(() => {
+          if (!document.body.classList.contains('booting')) {
+            mo.disconnect();
+            setTimeout(activate, 80);
+          }
+        });
+        mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+      } else {
+        activate();
+      }
+    }
+
+    if (reduced) {
+      activate();
+    } else {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            observer.disconnect();
+            tryActivate();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(el);
+    }
+  }
+</script>
+
+<style>
+  /* ── Frame ───────────────────────────────────────────────────────────────── */
+
+  .ascii-terminal {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-neutral);
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 420px;
+    width: 100%;
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.5),
+      inset 0 0 0 0.5px rgba(255, 255, 255, 0.03);
+  }
+
+  /* ── Chrome bar ──────────────────────────────────────────────────────────── */
+
+  .term-chrome {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-neutral);
+    gap: 8px;
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-r { background: rgba(255, 95, 87, 0.7);  }
+  .dot-y { background: rgba(254, 188, 46, 0.7); }
+  .dot-g { background: rgba(40, 200, 64, 0.7);  }
+
+  .term-fname {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-ghost);
+    flex: 1;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Body ────────────────────────────────────────────────────────────────── */
+
+  .term-body {
+    padding: 16px 20px 22px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .term-gap {
+    height: 10px;
+  }
+
+  /* ── Lines ───────────────────────────────────────────────────────────────── */
+
+  .term-line {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.75;
+    display: flex;
+    align-items: baseline;
+    /* initial: hidden + slightly offset */
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  /* Reduced motion: reveal immediately */
+  @media (prefers-reduced-motion: reduce) {
+    .term-line {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .bar-fill {
+      clip-path: none !important;
+    }
+
+    .t-typing {
+      max-width: none !important;
+      animation: none !important;
+    }
+
+    .t-cursor {
+      animation: none !important;
+      opacity: 1 !important;
+    }
+  }
+
+  /* When terminal becomes active: stream lines in */
+  @media (prefers-reduced-motion: no-preference) {
+    .terminal--active .term-line {
+      animation: line-in 220ms ease forwards;
+      animation-delay: var(--dl, 0ms);
+    }
+  }
+
+  @keyframes line-in {
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── Typing animation — command line ─────────────────────────────────────── */
+
+  .t-typing {
+    display: inline-block;
+    overflow: hidden;
+    max-width: 0;
+    white-space: nowrap;
+    vertical-align: bottom;
+    color: var(--text-primary);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* "analyze --target portfolio" = 26 chars → steps(26) */
+    .terminal--active .t-typing {
+      animation: type-out 700ms steps(26) forwards;
+      animation-delay: 60ms;
+    }
+  }
+
+  @keyframes type-out {
+    to { max-width: 26ch; }
+  }
+
+  /* ── Bar fill reveal — clip from right ───────────────────────────────────── */
+
+  .bar-fill {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .terminal--active .bar-fill {
+      animation: bar-reveal 700ms ease forwards;
+      /* bar reveals slightly after its row appears */
+      animation-delay: calc(var(--dl, 0ms) + 130ms);
+    }
+  }
+
+  @keyframes bar-reveal {
+    to { clip-path: inset(0 0% 0 0); }
+  }
+
+  /* ── Cursor ──────────────────────────────────────────────────────────────── */
+
+  .t-cursor {
+    color: var(--accent);
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .terminal--active .t-cursor {
+      animation:
+        line-in    150ms ease            forwards,
+        cur-blink  900ms step-end        infinite;
+      animation-delay:
+        calc(var(--dl, 0ms) + 80ms),
+        calc(var(--dl, 0ms) + 700ms);
+    }
+
+    @keyframes cur-blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+  }
+
+  /* ── Color tokens ────────────────────────────────────────────────────────── */
+
+  .c-ghost    { color: var(--text-ghost);     }
+  .c-muted    { color: var(--text-muted);     }
+  .c-secondary{ color: var(--text-secondary); }
+  .c-primary  { color: var(--text-primary);   }
+  .c-accent   { color: var(--accent);         }
+  .c-online   { color: rgba(40, 200, 64, 0.85); }
+  .c-up       { color: var(--accent);         }
+  .c-down     { color: var(--text-ghost);     }
+
+  .c-label {
+    color: var(--text-ghost);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .c-rule { color: var(--text-ghost); opacity: 0.4; }
+
+  /* ── Bar row layout ──────────────────────────────────────────────────────── */
+
+  .bar-row { gap: 0; }
+
+  .bar-month {
+    flex-shrink: 0;
+  }
+
+  .bar-count {
+    flex-shrink: 0;
+    width: 3ch;
+    text-align: right;
+    margin-left: 4px;
+  }
+
+  .bar-trend {
+    flex-shrink: 0;
+    width: 2ch;
+  }
+</style>

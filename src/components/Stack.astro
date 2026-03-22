@@ -1,6 +1,7 @@
 ---
 import { useTranslations } from '../i18n/utils';
 import { stackCategories } from '../data/stack';
+import LangChart from './LangChart.astro';
 
 interface Props {
   lang: 'en' | 'pt-br';
@@ -43,6 +44,11 @@ const t = useTranslations(lang);
                 </li>
               ))}
             </ul>
+            {cat.labelEn === 'Languages' && (
+              <div class="lang-chart-wrapper">
+                <LangChart items={cat.items} />
+              </div>
+            )}
           </div>
         );
       })}
@@ -198,9 +204,17 @@ const t = useTranslations(lang);
     }
   }
 
+  .lang-chart-wrapper {
+    margin-top: 16px;
+  }
+
   @media (max-width: 767px) {
     .stack-container {
       padding: 64px 24px;
+    }
+
+    .lang-chart-wrapper :global(.lang-chart) {
+      max-width: 100%;
     }
   }
 </style>

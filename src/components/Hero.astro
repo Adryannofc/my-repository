@@ -2,6 +2,7 @@
 import { useTranslations } from '../i18n/utils';
 import { socialLinks } from '../data/social';
 import Ticker from './Ticker.astro';
+import AsciiTerminal from './AsciiTerminal.astro';
 import { Github, Linkedin, MessageCircle } from 'lucide-astro';
 
 interface Props {
@@ -48,9 +49,7 @@ const iconMap = { Github, Linkedin, MessageCircle } as const;
     </div>
 
     <div class="hero-right" aria-hidden="true">
-      <div class="ambient-frame">
-        <div class="ambient-glow"></div>
-      </div>
+      <AsciiTerminal />
     </div>
 
   </div>
@@ -93,14 +92,18 @@ const iconMap = { Github, Linkedin, MessageCircle } as const;
 <style>
   section {
     width: 100%;
+    min-height: 100vh;
     background-color: var(--bg-base);
+    display: flex;
+    flex-direction: column;
   }
 
   .hero-container {
     max-width: 1440px;
+    width: 100%;
     margin: 0 auto;
     padding: 96px 24px 64px;
-    min-height: 256px;
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 48px;
@@ -215,26 +218,9 @@ const iconMap = { Github, Linkedin, MessageCircle } as const;
     flex: 0 0 40%;
     max-width: 40%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-  }
-
-  .ambient-frame {
-    width: 200px;
-    height: 140px;
-    border: 1px dashed var(--border-neutral);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ambient-glow {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: var(--border-subtle);
-    box-shadow: 0 0 32px 16px var(--border-subtle);
+    padding-top: 8px;
   }
 
   /* ── Responsive ───────────────────────────────── */
@@ -243,6 +229,7 @@ const iconMap = { Github, Linkedin, MessageCircle } as const;
     .hero-container {
       flex-direction: column;
       align-items: flex-start;
+      justify-content: center;
       gap: 32px;
       padding-top: 64px;
       padding-bottom: 48px;
