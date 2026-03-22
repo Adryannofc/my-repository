@@ -29,7 +29,6 @@ const t = useTranslations(lang);
                   class="stack-pill"
                   role="listitem"
                   tabindex="0"
-                  style={`--delay: ${i * 60}ms`}
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -53,29 +52,24 @@ const t = useTranslations(lang);
 </section>
 
 <script>
-  (function () {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const grid = document.querySelector('[data-stack]');
-    if (!grid || reduced) return;
+  import { gsap, ScrollTrigger } from '../scripts/gsap';
 
-    const pills = grid.querySelectorAll<HTMLElement>('.stack-pill');
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            observer.unobserve(entry.target);
-            pills.forEach((pill) => {
-              pill.classList.add('animate-fade-in-up');
-            });
-          }
-        });
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced) {
+    gsap.from('.stack-pill', {
+      scrollTrigger: {
+        trigger: '[data-stack]',
+        start: 'top 80%',
+        once: true,
       },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(grid);
-  })();
+      opacity: 0,
+      y: 12,
+      duration: 0.5,
+      ease: 'power2.out',
+      stagger: 0.04,
+      clearProps: 'opacity,transform',
+    });
+  }
 </script>
 
 <style>
@@ -125,7 +119,7 @@ const t = useTranslations(lang);
     border-top: 1px solid var(--border-neutral);
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
 
   .group-label {
@@ -171,13 +165,18 @@ const t = useTranslations(lang);
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.04em;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     transition: color 150ms ease;
     white-space: nowrap;
   }
 
-  .stack-pill:hover,
+  .stack-pill:hover {
+    border-color: var(--border-accent);
+  }
+
   .stack-pill:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
     border-color: var(--border-accent);
   }
 
@@ -189,11 +188,6 @@ const t = useTranslations(lang);
   .stack-pill:hover .pill-name,
   .stack-pill:focus-visible .pill-name {
     color: var(--accent);
-  }
-
-  /* Staggered fade-in via IntersectionObserver */
-  .stack-pill.animate-fade-in-up {
-    animation-delay: var(--delay);
   }
 
   @media (prefers-reduced-motion: reduce) {

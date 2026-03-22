@@ -1,0 +1,218 @@
+---
+import { useTranslations } from '../i18n/utils';
+import { socialLinks } from '../data/social';
+import { Github, Linkedin, MessageCircle } from 'lucide-astro';
+
+interface Props {
+  lang: 'en' | 'pt-br';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const iconMap = { Github, Linkedin, MessageCircle } as const;
+
+const EMAIL_HREF = 'mailto:you@example.com'; // TODO: replace with real address
+---
+
+<section id="contact" aria-labelledby="contact-heading">
+  <div class="contact-container" data-contact>
+
+    <p class="contact-overline">{t.contact.overline}</p>
+
+    <div class="contact-cta">
+      <h2 id="contact-heading" class="contact-heading">{t.contact.heading}</h2>
+      <p class="contact-subtext">{t.contact.subtext}</p>
+    </div>
+
+    <a
+      href={EMAIL_HREF}
+      class="contact-email-bar"
+      aria-label={t.contact.email_label}
+    >
+      {t.contact.email_label}
+    </a>
+
+    <div class="contact-social" role="list" aria-label="Social links">
+      {socialLinks.map((link) => {
+        const label = lang === 'en' ? link.labelEn : link.labelPtBr;
+        const Icon = iconMap[link.icon];
+        return (
+          <a
+            href={link.href}
+            class="contact-social-link"
+            aria-label={label}
+            target="_blank"
+            rel="noopener noreferrer"
+            role="listitem"
+          >
+            {Icon && <Icon size={24} strokeWidth={1.5} aria-hidden="true" />}
+          </a>
+        );
+      })}
+    </div>
+
+    <p class="contact-footer">{t.footer.built_with}</p>
+
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger } from '../scripts/gsap';
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced) {
+    gsap.from('[data-contact]', {
+      scrollTrigger: {
+        trigger: '[data-contact]',
+        start: 'top 85%',
+        once: true,
+      },
+      opacity: 0,
+      y: 16,
+      duration: 0.6,
+      ease: 'power2.out',
+      clearProps: 'opacity,transform',
+    });
+  }
+</script>
+
+<style>
+  section {
+    width: 100%;
+    background-color: var(--bg-surface);
+  }
+
+  .contact-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 96px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    text-align: center;
+  }
+
+  .contact-overline {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .contact-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .contact-heading {
+    font-family: var(--font-sans);
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .contact-subtext {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .contact-email-bar {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-decoration: none;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-accent);
+  }
+
+  .contact-email-bar:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .contact-email-bar {
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+
+    .contact-email-bar:hover {
+      color: var(--accent-hover);
+      border-color: var(--accent);
+    }
+  }
+
+  .contact-social {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .contact-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    border: 1px solid var(--border-neutral);
+    color: var(--text-ghost);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .contact-social-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .contact-social-link {
+      transition: border-color 150ms ease, color 150ms ease;
+    }
+
+    .contact-social-link:hover {
+      border-color: var(--border-accent);
+      color: var(--text-primary);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-social-link {
+      transition: none;
+    }
+  }
+
+  .contact-footer {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--text-ghost);
+    margin: 0;
+  }
+
+  @media (max-width: 767px) {
+    .contact-container {
+      padding: 64px 24px;
+      gap: 24px;
+    }
+  }
+</style>

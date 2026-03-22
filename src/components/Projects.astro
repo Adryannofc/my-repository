@@ -19,7 +19,7 @@ const t = useTranslations(lang);
 
     <ul class="projects-grid" role="list" data-projects>
       {projects.map((p) => (
-        <li class="project-card" role="listitem" style={`--index: ${p.id - 1}`}>
+        <li class="project-card" role="listitem">
           <div class="card-top">
             <span class="card-number" aria-hidden="true">
               {String(p.id).padStart(2, '0')}
@@ -66,29 +66,24 @@ const t = useTranslations(lang);
 </section>
 
 <script>
-  (function () {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const grid = document.querySelector('[data-projects]');
-    if (!grid || reduced) return;
+  import { gsap, ScrollTrigger } from '../scripts/gsap';
 
-    const cards = grid.querySelectorAll<HTMLElement>('.project-card');
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            observer.unobserve(entry.target);
-            cards.forEach((card) => {
-              card.classList.add('visible');
-            });
-          }
-        });
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced) {
+    gsap.from('.project-card', {
+      scrollTrigger: {
+        trigger: '[data-projects]',
+        start: 'top 80%',
+        once: true,
       },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(grid);
-  })();
+      opacity: 0,
+      y: 16,
+      duration: 0.6,
+      ease: 'power2.out',
+      stagger: 0.08,
+      clearProps: 'opacity,transform',
+    });
+  }
 </script>
 
 <style>
@@ -154,15 +149,6 @@ const t = useTranslations(lang);
     justify-content: space-between;
     gap: 16px;
     min-height: 140px;
-
-    /* Scroll-triggered animation initial state */
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  .project-card.visible {
-    animation: fade-in-up 600ms ease forwards;
-    animation-delay: calc(var(--index) * 80ms);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -177,17 +163,6 @@ const t = useTranslations(lang);
       border-color: var(--border-accent);
       transform: translateY(-4px);
       box-shadow: 0 8px 32px rgba(242, 135, 5, 0.08);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .project-card {
-      opacity: 1;
-      transform: none;
-    }
-
-    .project-card.visible {
-      animation: none;
     }
   }
 
@@ -244,7 +219,7 @@ const t = useTranslations(lang);
     margin: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
   }
 
   .badge {
@@ -277,7 +252,7 @@ const t = useTranslations(lang);
   }
 
   .card-link:hover {
-    color: var(--text-secondary);
+    color: var(--text-primary);
   }
 
   .card-link:focus-visible {
