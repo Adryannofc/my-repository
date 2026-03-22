@@ -3,6 +3,7 @@ import { useTranslations } from '../i18n/utils';
 import { socialLinks } from '../data/social';
 import Ticker from './Ticker.astro';
 import AsciiTerminal from './AsciiTerminal.astro';
+import AsciiBackground from './AsciiBackground.astro';
 import { Github, Linkedin, MessageCircle } from 'lucide-astro';
 
 interface Props {
@@ -15,6 +16,7 @@ const iconMap = { Github, Linkedin, MessageCircle } as const;
 ---
 
 <section aria-labelledby="hero-heading">
+  <AsciiBackground />
   <div class="hero-container">
 
     <div class="hero-left">
@@ -91,6 +93,8 @@ const iconMap = { Github, Linkedin, MessageCircle } as const;
 
 <style>
   section {
+    position: relative;
+    overflow: hidden;
     width: 100%;
     min-height: 100vh;
     background-color: var(--bg-base);
@@ -99,6 +103,8 @@ const iconMap = { Github, Linkedin, MessageCircle } as const;
   }
 
   .hero-container {
+    position: relative;
+    z-index: 1;
     max-width: 1440px;
     width: 100%;
     margin: 0 auto;
