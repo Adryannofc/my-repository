@@ -81,6 +81,7 @@ $RECYCLE.BIN/
 
 # ─── Claude Code ─────────────────────────────────────────────────────────────
 .claude/
+CLAUDE.md
 
 # ─── Project docs (design specs, wireframes) ─────────────────────────────────
 docs/
